@@ -137,7 +137,6 @@ uv run main.py --platform xhs --lt qrcode --type detail
 uv run main.py --help
 ```
 
-<details>
 <summary>🔗 <strong>使用 Python 原生 venv 管理环境（不推荐）</strong></summary>
 
 #### 创建并激活 Python 虚拟环境
@@ -188,9 +187,10 @@ python main.py --platform xhs --lt qrcode --type detail
 
 # 其他平台爬虫使用示例，执行下面的命令查看
 python main.py --help
+
+python main.py --platform dy --lt qrcode --type search --keywords '曹操'
 ```
 
-</details>
 
 
 ## 💾 数据保存
