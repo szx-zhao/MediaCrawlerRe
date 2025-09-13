@@ -148,8 +148,8 @@ class DouYinCrawler(AbstractCrawler):
                     await douyin_store.update_douyin_aweme(aweme_item=aweme_info)
                     await self.get_aweme_media(aweme_item=aweme_info)
                 # Sleep after each page navigation
-                await asyncio.sleep(config.CRAWLER_MAX_SLEEP_SEC)
-                utils.logger.info(f"[DouYinCrawler.search] Sleeping for {config.CRAWLER_MAX_SLEEP_SEC} seconds after page {page-1}")
+                await asyncio.sleep(random.uniform(3, config.CRAWLER_MAX_SLEEP_SEC))
+                utils.logger.info(f"[DouYinCrawler.search] Sleeping for {random.uniform(3, config.CRAWLER_MAX_SLEEP_SEC)} seconds after page {page-1}")
             utils.logger.info(f"[DouYinCrawler.search] keyword:{keyword}, aweme_list:{aweme_list}")
             await self.batch_get_note_comments(aweme_list)
 
@@ -170,8 +170,8 @@ class DouYinCrawler(AbstractCrawler):
             try:
                 result = await self.dy_client.get_video_by_id(aweme_id)
                 # Sleep after fetching aweme detail
-                await asyncio.sleep(config.CRAWLER_MAX_SLEEP_SEC)
-                utils.logger.info(f"[DouYinCrawler.get_aweme_detail] Sleeping for {config.CRAWLER_MAX_SLEEP_SEC} seconds after fetching aweme {aweme_id}")
+                await asyncio.sleep(random.uniform(3, config.CRAWLER_MAX_SLEEP_SEC))
+                utils.logger.info(f"[DouYinCrawler.get_aweme_detail] Sleeping for {random.uniform(3, config.CRAWLER_MAX_SLEEP_SEC)} seconds after fetching aweme {aweme_id}")
                 return result
             except DataFetchError as ex:
                 utils.logger.error(f"[DouYinCrawler.get_aweme_detail] Get aweme detail error: {ex}")
@@ -201,10 +201,10 @@ class DouYinCrawler(AbstractCrawler):
             try:
                 # 将关键词列表传递给 get_aweme_all_comments 方法
                 # Use fixed crawling interval
-                crawl_interval = config.CRAWLER_MAX_SLEEP_SEC
+                crawl_interval = random.uniform(3, config.CRAWLER_MAX_SLEEP_SEC)
                 await self.dy_client.get_aweme_all_comments(
                     aweme_id=aweme_id,
-                    crawl_interval=crawl_interval,
+                    crawl_interval=random.uniform(1, crawl_interval),
                     is_fetch_sub_comments=config.ENABLE_GET_SUB_COMMENTS,
                     callback=douyin_store.batch_update_dy_aweme_comments,
                     max_count=config.CRAWLER_MAX_COMMENTS_COUNT_SINGLENOTES,

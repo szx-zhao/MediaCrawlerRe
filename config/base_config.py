@@ -7,10 +7,11 @@
 #
 # 详细许可条款请参阅项目根目录下的LICENSE文件。
 # 使用本代码即表示您同意遵守上述原则和LICENSE中的所有条款。
+import random
 
 # 基础配置
 PLATFORM = "dy"  # 平台，xhs | dy | ks | bili | wb | tieba | zhihu
-KEYWORDS = "雷军"  # 关键词搜索配置，以英文逗号分隔
+KEYWORDS = "江南"  # 关键词搜索配置，以英文逗号分隔
 LOGIN_TYPE = "qrcode"  # qrcode or phone or cookie
 COOKIES = ""
 CRAWLER_TYPE = (
@@ -105,9 +106,9 @@ STOP_WORDS_FILE = "./docs/hit_stopwords.txt"
 # 中文字体文件路径
 FONT_PATH = "./docs/STZHONGS.TTF"
 
-# 爬取间隔时间
-CRAWLER_MAX_SLEEP_SEC = 5
-# CRAWLER_MAX_SLEEP_SEC = (1, 4)  # (最小值, 最大值)
+# 爬取间隔时间改为6,8之间的的随机数
+CRAWLER_MAX_SLEEP_SEC = random.randint(6, 8)
+
 
 
 from .bilibili_config import *
