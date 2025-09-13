@@ -137,7 +137,7 @@ class DouYinClient(AbstractApiClient):
         offset: int = 0,
         search_channel: SearchChannelType = SearchChannelType.GENERAL,
         sort_type: SearchSortType = SearchSortType.GENERAL,
-        publish_time: PublishTimeType = PublishTimeType.UNLIMITED,
+        publish_time: PublishTimeType = PublishTimeType.ONE_WEEK,
         search_id: str = "",
     ):
         """
@@ -164,9 +164,9 @@ class DouYinClient(AbstractApiClient):
             'list_type': 'multi',
             'search_id': search_id,
         }
-        if sort_type.value != SearchSortType.GENERAL.value or publish_time.value != PublishTimeType.UNLIMITED.value:
+        if sort_type.value != SearchSortType.GENERAL.value or publish_time.value != PublishTimeType.ONE_WEEK.value:
             query_params["filter_selected"] = json.dumps({"sort_type": str(sort_type.value), "publish_time": str(publish_time.value)})
-            query_params["is_filter_search"] = 1
+            query_params["is_filter_search"] = 7
             query_params["search_source"] = "tab_search"
         referer_url = f"https://www.douyin.com/search/{keyword}?aid=f594bbd9-a0e2-4651-9319-ebe3cb6298c1&type=general"
         headers = copy.copy(self.headers)

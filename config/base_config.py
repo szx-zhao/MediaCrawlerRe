@@ -11,8 +11,15 @@ import random
 
 # 基础配置
 PLATFORM = "dy"  # 平台，xhs | dy | ks | bili | wb | tieba | zhihu
-KEYWORDS = "江南"  # 关键词搜索配置，以英文逗号分隔
+KEYWORDS = "小米"  # 关键词搜索配置，以英文逗号分隔
 LOGIN_TYPE = "qrcode"  # qrcode or phone or cookie
+
+# 评论时间过滤
+TIME_COMMENTS = [0,2]
+
+# 评论内容过滤关键字（命中其中任意一项才会保存）
+COMMENT_KEYWORDS = ["雷军"]  # 留空列表 [] 表示不过滤
+
 COOKIES = ""
 CRAWLER_TYPE = (
     "search"  # 爬取类型，search(关键词搜索) | detail(帖子详情)| creator(创作者主页数据)
@@ -33,13 +40,13 @@ IP_PROXY_PROVIDER_NAME = "kuaidaili"  # kuaidaili | wandouhttp
 HEADLESS = False
 
 # 是否保存登录状态
-SAVE_LOGIN_STATE = True
+SAVE_LOGIN_STATE = False
 
 # ==================== CDP (Chrome DevTools Protocol) 配置 ====================
 # 是否启用CDP模式 - 使用用户现有的Chrome/Edge浏览器进行爬取，提供更好的反检测能力
 # 启用后将自动检测并启动用户的Chrome/Edge浏览器，通过CDP协议进行控制
 # 这种方式使用真实的浏览器环境，包括用户的扩展、Cookie和设置，大大降低被检测的风险
-ENABLE_CDP_MODE = True
+ENABLE_CDP_MODE = False
 
 # CDP调试端口，用于与浏览器通信
 # 如果端口被占用，系统会自动尝试下一个可用端口
@@ -72,7 +79,7 @@ USER_DATA_DIR = "%s_user_data_dir"  # %s will be replaced by platform name
 START_PAGE = 1
 
 # 爬取视频/帖子的数量控制
-CRAWLER_MAX_NOTES_COUNT = 2
+CRAWLER_MAX_NOTES_COUNT = 10
 
 # 并发爬虫数量控制
 MAX_CONCURRENCY_NUM = 1
@@ -84,11 +91,11 @@ ENABLE_GET_MEIDAS = False
 ENABLE_GET_COMMENTS = True
 
 # 爬取一级评论的数量控制(单视频/帖子)
-CRAWLER_MAX_COMMENTS_COUNT_SINGLENOTES = 5
+CRAWLER_MAX_COMMENTS_COUNT_SINGLENOTES = 150
 
 # 是否开启爬二级评论模式, 默认不开启爬二级评论
 # 老版本项目使用了 db, 则需参考 schema/tables.sql line 287 增加表字段
-ENABLE_GET_SUB_COMMENTS = False
+ENABLE_GET_SUB_COMMENTS = True
 
 # 词云相关
 # 是否开启生成评论词云图
@@ -106,8 +113,8 @@ STOP_WORDS_FILE = "./docs/hit_stopwords.txt"
 # 中文字体文件路径
 FONT_PATH = "./docs/STZHONGS.TTF"
 
-# 爬取间隔时间改为6,8之间的的随机数
-CRAWLER_MAX_SLEEP_SEC = random.randint(6, 8)
+# 爬取间隔时间改为2，4之间的的随机数
+CRAWLER_MAX_SLEEP_SEC = random.randint(2, 3)
 
 
 

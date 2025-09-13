@@ -19,10 +19,29 @@ from tools import utils
 
 class DouYinImage(AbstractStoreImage):
     image_store_path: str = "data/douyin/images"
+    # 时间筛选范围：保留最近10天到20天的数据
+    TIME_COMMENTS = (10, 20)
+
+    def __init__(self):
+        self.current_time = int(time.time())
+        self.start_time = self.current_time - self.TIME_COMMENTS[1] * 24 * 3600  # 20天前
+        self.end_time = self.current_time - self.TIME_COMMENTS[0] * 24 * 3600    # 10天前
+
+    def is_within_time_range(self, create_time: int) -> bool:
+        """
+        检查时间戳是否在指定时间范围内
+        
+        Args:
+            create_time: Unix时间戳（秒）
+            
+        Returns:
+            bool: 是否在时间范围内
+        """
+        return self.start_time <= create_time <= self.end_time
 
     async def store_image(self, image_content_item: Dict):
         """
-        store content
+        store content with time filter
         
         Args:
             image_content_item:
@@ -30,6 +49,12 @@ class DouYinImage(AbstractStoreImage):
         Returns:
 
         """
+        # 检查时间范围
+        create_time = image_content_item.get("create_time")
+        if create_time and not self.is_within_time_range(create_time):
+            utils.logger.info(f"[DouYinImageStoreImplement.store_image] Skip image, create_time {create_time} not in range {self.TIME_COMMENTS}")
+            return
+            
         await self.save_image(image_content_item.get("aweme_id"), image_content_item.get("pic_content"), image_content_item.get("extension_file_name"))
 
     def make_save_file_name(self, aweme_id: str, extension_file_name: str) -> str:
@@ -66,10 +91,29 @@ class DouYinImage(AbstractStoreImage):
 
 class DouYinVideo(AbstractStoreVideo):
     video_store_path: str = "data/douyin/videos"
+    # 时间筛选范围：保留最近10天到20天的数据
+    TIME_COMMENTS = (10, 20)
+
+    def __init__(self):
+        self.current_time = int(time.time())
+        self.start_time = self.current_time - self.TIME_COMMENTS[1] * 24 * 3600  # 20天前
+        self.end_time = self.current_time - self.TIME_COMMENTS[0] * 24 * 3600    # 10天前
+
+    def is_within_time_range(self, create_time: int) -> bool:
+        """
+        检查时间戳是否在指定时间范围内
+        
+        Args:
+            create_time: Unix时间戳（秒）
+            
+        Returns:
+            bool: 是否在时间范围内
+        """
+        return self.start_time <= create_time <= self.end_time
 
     async def store_video(self, video_content_item: Dict):
         """
-        store content
+        store content with time filter
         
         Args:
             video_content_item:
@@ -77,6 +121,12 @@ class DouYinVideo(AbstractStoreVideo):
         Returns:
 
         """
+        # 检查时间范围
+        create_time = video_content_item.get("create_time")
+        if create_time and not self.is_within_time_range(create_time):
+            utils.logger.info(f"[DouYinVideoStoreImplement.store_video] Skip video, create_time {create_time} not in range {self.TIME_COMMENTS}")
+            return
+            
         await self.save_video(video_content_item.get("aweme_id"), video_content_item.get("video_content"), video_content_item.get("extension_file_name"))
 
     def make_save_file_name(self, aweme_id: str, extension_file_name: str) -> str:

@@ -20,6 +20,19 @@ from var import source_keyword_var
 from ._store_impl import *
 from .douyin_store_media import *
 
+import pathlib
+from typing import Dict
+import datetime
+import time
+
+import aiofiles
+
+from base.base_crawler import AbstractStoreImage, AbstractStoreVideo
+from tools import utils
+
+
+from config.base_config import COMMENT_KEYWORDS
+from config.base_config import TIME_COMMENTS
 
 class DouyinStoreFactory:
     STORES = {
@@ -171,6 +184,8 @@ async def update_douyin_aweme(aweme_item: Dict):
         "note_download_url": ",".join(_extract_note_image_list(aweme_item)),
         "source_keyword": source_keyword_var.get(),
     }
+    
+    
     utils.logger.info(f"[store.douyin.update_douyin_aweme] douyin aweme id:{aweme_id}, title:{save_content_item.get('title')}")
     await DouyinStoreFactory.create_store().store_content(content_item=save_content_item)
 
@@ -210,6 +225,42 @@ async def update_dy_aweme_comment(aweme_id: str, comment_item: Dict):
         "parent_comment_id": parent_comment_id,
         "pictures": ",".join(_extract_comment_image_list(comment_item)),
     }
+    
+    if COMMENT_KEYWORDS:
+        content = (save_comment_item.get("content") or "").lower()
+        # 命中任一关键字才保存
+        if not any(k.lower() in content for k in COMMENT_KEYWORDS):
+            return
+        
+    if TIME_COMMENTS:
+        create_time = save_comment_item.get("create_time")
+        if create_time:
+            # 使用UTC时间进行计算
+            now_utc = datetime.datetime.now(datetime.timezone.utc)
+            
+            # 确保评论时间也是UTC时间
+            # 假设create_time是UTC时间戳
+            comment_time_utc = datetime.datetime.fromtimestamp(create_time, tz=datetime.timezone.utc)
+            
+            # 计算时间差
+            delta = now_utc - comment_time_utc
+            
+            # 使用总天数计算（更精确）
+            total_days = delta.days + delta.seconds / 86400
+            
+            min_days = TIME_COMMENTS[0]
+            max_days = TIME_COMMENTS[1]
+            
+            # 添加调试日志
+            utils.logger.debug(f"[TIME_CHECK] Comment time: {comment_time_utc}, Now: {now_utc}, Delta days: {total_days:.2f}, Range: [{min_days}, {max_days}]")
+            
+            if not (min_days <= total_days <= max_days):
+                utils.logger.debug(f"[TIME_CHECK] Comment outside time range, skipping")
+                return
+            else:
+                utils.logger.debug(f"[TIME_CHECK] Comment within time range, processing")
+    
+               
     utils.logger.info(f"[store.douyin.update_dy_aweme_comment] douyin aweme comment: {comment_id}, content: {save_comment_item.get('content')}")
 
     await DouyinStoreFactory.create_store().store_comment(comment_item=save_comment_item)
